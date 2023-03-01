@@ -97,3 +97,6 @@ function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSo
     // We return the array of results.
     return results;
 }
+
+// Export the function.
+export { solveResistiveCircuit };
