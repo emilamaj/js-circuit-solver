@@ -1,0 +1,19 @@
+{
+  "name": "js-circuit-solver",
+  "version": "1.0.0",
+  "description": "Lightweight library aimed at solving/simulating simple electrical circuits",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilamaj/js-circuit-solver.git"
+  },
+  "author": "Emile Amajar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emilamaj/js-circuit-solver/issues"
+  },
+  "homepage": "https://github.com/emilamaj/js-circuit-solver#readme"
+}
