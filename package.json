@@ -1,6 +1,6 @@
 {
   "name": "js-circuit-solver",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Lightweight library aimed at solving/simulating simple electrical circuits",
   "main": "index.js",
   "scripts": {
