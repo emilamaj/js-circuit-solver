@@ -4,8 +4,8 @@ import { solve } from 'mathjs'; // Used to solve the system of linear equations.
 // This function uses the classical matrix inversion method to solve a given circuit.
 // It only supports circuit made entierly of resistors.
 // The circuit is represented as an adjacency list of nodes and the resistance of the connections between them. Nodes can have any number of connections (the connections are of course bidirectional).
-function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSourceVoltage) {
-    // We will set up a system of linear equations where the unknowns are the voltages and currents of the circuit.
+function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage) {
+    // We will set up a system of linear equations where the unknowns are the voltages of the circuit.
     // The system of linear equations will be represented as an array of arrays of numbers.
     // We will then solve the equation M * x = b, where x is the vector of unknown voltages, M is the matrix of coefficients, and b is the vector of constants.
     
@@ -21,9 +21,9 @@ function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSo
     
     // We set up the second equation of the system of linear equations.
     // The second equation is the equation for the voltage source node.
-    // The voltage source node is the node where we set the voltage to a specific value, so we set the second equation to be V_src = voltageSourceVoltage.
-    M[voltageSourceNode][voltageSourceNode] = 1;
-    b[voltageSourceNode] = voltageSourceVoltage;
+    // The voltage source node is the node where we set the voltage to a specific value, so we set the second equation to be V_src = sourceVoltage.
+    M[sourceNode][sourceNode] = 1;
+    b[sourceNode] = sourceVoltage;
     
     // We set up the equations corresponding to Kirchhoff's current law.
     //     1
@@ -40,7 +40,7 @@ function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSo
     // We loop through all the nodes in the circuit.
     for (let i = 0; i < circuit.length; i++) {
         // We skip the first two equations, since they are already set up.
-        if (i === groundNode || i === voltageSourceNode) continue;
+        if (i === groundNode || i === sourceNode) continue;
         
         // We loop through all the connections of the current node.
         for (let j = 0; j < circuit[i].length; j++) {
@@ -69,7 +69,6 @@ function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSo
     for (let i = 0; i < circuit.length; i++) {
         // We create an object to store the results for the current node.
         let result = {
-            id: i,
             voltage: x[i],
             connections: []
         };
@@ -98,5 +97,104 @@ function solveResistiveCircuit(circuit, groundNode, voltageSourceNode, voltageSo
     return results;
 }
 
+// This function uses a gradient descent method to solve a given circuit.
+// It only supports circuit made entierly of resistors.
+function solveGradientDescent(circuit, groundNode, sourceNode, sourceVoltage, iterations = 1000, learningRate = 0.001) {
+    // A loop will calculate the sum of the currents flowing into each node. The sum should converge to zero for each node at equilibrium (Kirchhoff's current law).
+
+    // We create an array to store the voltages of each node.
+    let voltages = Array(circuit.length).fill(0);
+    // Set the known voltages.
+    voltages[groundNode] = 0;
+    voltages[sourceNode] = sourceVoltage;
+
+    // Loop for the specified number of iterations. Each iteration will update the voltages of each node.
+    for (let i = 0; i < iterations; i++) {
+        let error = 0; // We will use this variable to calculate the total error of the circuit.
+
+        // We loop through all the nodes in the circuit.
+        for (let j = 0; j < circuit.length; j++) {
+            // We skip only nodes that we already know the voltage of (Kirchhoff's current law does not apply to ground node and voltage source node).
+            if (j === groundNode || j === sourceNode) continue;
+
+            // We calculate the sum of the currents flowing into the current node.
+            let currentSum = 0;
+            for (let k = 0; k < circuit[j].length; k++) {
+                // We get the node that the current connection connects to.
+                let connection = circuit[j][k];
+                let to = connection.to;
+
+                // We calculate the current flowing into the current node. If the voltage of the node that the current connection connects to is greater than the voltage of the current node, the current will be positive. If the voltage of the node that the current connection connects to is less than the voltage of the current node, the current will be negative.
+                let current = (voltages[to] - voltages[j]) / connection.resistance;
+
+                // We add the current to the sum.
+                currentSum += current;
+
+                // The error term is the square of the sum of the currents
+                error += current * current;
+                
+            }
+
+            // We update the voltages of all the nodes connected to the current node so that the sum of the currents flowing into the current node will converge to zero.
+            for (let k = 0; k < circuit[j].length; k++) {
+                // Skip the ground node and voltage source node.
+                if (k === groundNode || k === sourceNode) continue;
+
+                // We get the node that the current connection connects to.
+                let connection = circuit[j][k];
+                let to = connection.to;
+
+                // We calculate the current flowing into the current node. If the voltage of the node that the current connection connects to is greater than the voltage of the current node, the current will be positive. If the voltage of the node that the current connection connects to is less than the voltage of the current node, the current will be negative.
+                let current = (voltages[to] - voltages[j]) / connection.resistance;
+
+                // We update the voltage of the node that the current connection connects to.
+                voltages[to] -= learningRate * currentSum * (1 / connection.resistance);
+            }
+            
+        }
+
+        // We print the error of the circuit every 100 iterations.
+        if (i % 100 === 0) {
+            console.log(`Error: ${error}`);
+        }
+    }
+
+    // We create an array to store the results.
+    let results = [];
+
+    // We loop through all the nodes in the circuit.
+    for (let i = 0; i < circuit.length; i++) {
+        // We create an object to store the results for the current node.
+        let result = {
+            voltage: voltages[i],
+            connections: []
+        };
+
+        // We loop through all the connections of the current node.
+        for (let j = 0; j < circuit[i].length; j++) {
+            // We get the node that the current connection connects to.
+            let connection = circuit[i][j];
+            let to = connection.to;
+
+            // We calculate the current flowing through the current connection.
+            let current = (voltages[i] - voltages[to]) / connection.resistance;
+
+            // We add the current to the results for the current node.
+            result.connections.push({
+                id: to,
+                current: current
+            });
+        }
+
+        // We add the results for the current node to the array of results.
+        results.push(result);
+    }
+
+    // We return the array of results.
+    return results;
+}
+
+
+
 // Export the function.
-export { solveResistiveCircuit };
+export { solveResistiveCircuit, solveGradientDescent };
