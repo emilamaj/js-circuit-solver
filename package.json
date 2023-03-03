@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/emilamaj/js-circuit-solver/issues"
   },
-  "homepage": "https://github.com/emilamaj/js-circuit-solver#readme"
+  "homepage": "https://github.com/emilamaj/js-circuit-solver#readme",
+  "dependencies": {
+    "mathjs": "^11.6.0"
+  }
 }

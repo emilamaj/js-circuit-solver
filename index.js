@@ -1,5 +1,5 @@
 // The following code calculates the voltage and current at each node in a circuit.
-import { solve } from 'mathjs'; // Used to solve the system of linear equations.
+const mathjs = require('mathjs'); // Used to solve the system of linear equations.
 
 // This function uses the classical matrix inversion method to solve a given circuit.
 // It only supports circuit made entierly of resistors.
@@ -60,7 +60,7 @@ function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage) {
     }
 
     // We solve the system of linear equations.
-    let x = solve(M, b);
+    let x = mathjs.lusolve(M, b);
 
     // We create an array to store the results.
     let results = [];
@@ -84,7 +84,7 @@ function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage) {
 
             // We add the current to the results for the current node.
             result.connections.push({
-                id: to,
+                to: to,
                 current: current
             });
         }
@@ -181,7 +181,7 @@ function solveGradientDescent(circuit, groundNode, sourceNode, sourceVoltage, it
 
             // We add the current to the results for the current node.
             result.connections.push({
-                id: to,
+                to: to,
                 current: current
             });
         }
@@ -197,4 +197,7 @@ function solveGradientDescent(circuit, groundNode, sourceNode, sourceVoltage, it
 
 
 // Export the function.
-export { solveResistiveCircuit, solveGradientDescent };
+module.exports = {
+    solveResistiveCircuit: solveResistiveCircuit,
+    solveGradientDescent: solveGradientDescent
+};
