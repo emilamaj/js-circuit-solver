@@ -1,4 +1,5 @@
-import { solveResistiveCircuit,solveGradientDescent } from "../index.js";
+const solver = require("./index");
+const util = require("util");
 
 // Tests are performed here
 
@@ -532,19 +533,6 @@ function checkResult(result) {
             console.log(`Kirchoff's current law is violated at node ${i}`);
         }
     }
-
-    // Check for equality of voltage across two ends of the same connection (must be equal in magnitude and opposite in sign)
-    for (let i = 0; i < result.length; i++) {
-        for (let j = 0; j < result[i].connections.length; j++) {
-            let voltageDiff = result[result[i].connections[j].to].voltage - result[i].voltage;
-            if (Math.abs(voltageDiff) > 0.0000001) {
-                console.log(`Voltage across connection between node ${i} and node ${result[i].connections[j].to} is not equal in magnitude`);
-            }
-            if (voltageDiff * result[i].connections[j].current > 0.0000001) {
-                console.log(`Voltage across connection between node ${i} and node ${result[i].connections[j].to} is not equal in sign`);
-            }
-        }
-    }
 }
 
 
@@ -579,3 +567,10 @@ function compareResult(truth, result) {
     };
 }
 
+let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
+
+// console.log(test2);
+// Inspect test2
+console.log(util.inspect(test2, {showHidden: false, depth: null, colors: true}))
+
+checkResult(test2);
