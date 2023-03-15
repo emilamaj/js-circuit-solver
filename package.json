@@ -1,6 +1,6 @@
 {
   "name": "js-circuit-solver",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Lightweight library aimed at solving/simulating simple electrical circuits",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/emilamaj/js-circuit-solver#readme",
   "dependencies": {
+    "gpu.js": "^2.16.0",
     "mathjs": "^11.6.0"
   }
 }
