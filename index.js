@@ -1,10 +1,11 @@
 // The following code calculates the voltage and current at each node in a circuit.
 const mathjs = require('mathjs'); // Used to solve the system of linear equations.
+const utils = require('./utils');
 
 // This function uses the classical matrix inversion method to solve a given circuit.
 // It only supports circuit made entierly of resistors.
 // The circuit is represented as an adjacency list of nodes and the resistance of the connections between them. Nodes can have any number of connections (the connections are of course bidirectional).
-function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage) {
+function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage, useGpu=false) {
     // We will set up a system of linear equations where the unknowns are the voltages of the circuit.
     // The system of linear equations will be represented as an array of arrays of numbers.
     // We will then solve the equation M * x = b, where x is the vector of unknown voltages, M is the matrix of coefficients, and b is the vector of constants.
@@ -60,7 +61,8 @@ function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage) {
     }
 
     // We solve the system of linear equations.
-    let x = mathjs.lusolve(M, b);
+    // let x = mathjs.lusolve(M, b);
+    let x = utils.solveLinearEquations(M, b, useGpu);
 
     // We create an array to store the results.
     let results = [];
