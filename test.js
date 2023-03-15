@@ -1,7 +1,13 @@
 const solver = require("./index");
-const util = require("util");
+const mathjs = require("mathjs");
+const utils = require('./utils.js'); // Used to calculate the inverse of a matrix.
+
+// To import gpu.js in Node.js, you need to use the following command:
+// npm install --save gpu.js
+
 
 // Tests are performed here
+// Run the tests by running the command "node test.js" in the terminal.
 
 // List of circuits to test and their expected results:
 // This circuit is comprised of 2 nodes connected in series by 1 resistor. The source node is 0 and the ground node is 1. Source voltage is 1V.
@@ -567,10 +573,39 @@ function compareResult(truth, result) {
     };
 }
 
+// Test some circuits
+console.log("Testing example 2...");
 let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
-
-// console.log(test2);
-// Inspect test2
-console.log(util.inspect(test2, {showHidden: false, depth: null, colors: true}))
-
 checkResult(test2);
+
+console.log("Testing example 3...");
+let test3 = solver.solveResistiveCircuit(example3.circuit, example3.groundNode, example3.sourceNode, example3.sourceVoltage);
+checkResult(test3);
+
+// Test matrix inversion
+console.log("Testing matrix inversion...");
+// Create random triangular matrix of size 500
+let matrix = [];
+let N = 500;
+for (let i = 0; i < N; i++) {
+    matrix.push([]);
+    for (let j = 0; j < N; j++) {
+        if (j < i) {
+            matrix[i].push(0);
+        } else {
+            matrix[i].push(Math.random());
+        }
+    }
+}
+// Invert the matrix
+// Time inversion using mathjs
+let start = new Date().getTime();
+let inverse = mathjs.inv(matrix);
+let end = new Date().getTime();
+console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// Time inversion using my simple code (seems to have same performance as mathjs)
+start = new Date().getTime();
+inverse = utils.simpleInverse(matrix);
+end = new Date().getTime();
+console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);

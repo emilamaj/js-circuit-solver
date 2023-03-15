@@ -4,7 +4,7 @@ const mathjs = require('mathjs');
 // A^-1 = A^-1 + (I - A*A^-1)/2
 // It is applied iteratively until the desired precision is reached. Experimentaly, A.A^-1 = I with a precision of 10^-6 after 1 iteration.
 
-function quickInverse(A) {
+function simpleInverse(A) {
     // We create a matrix to store the result.
     let result = mathjs.identity(A.length);
 
@@ -23,5 +23,5 @@ function quickInverse(A) {
 
 // Export functions
 module.exports = {
-    quickInverse: quickInverse
+    simpleInverse: simpleInverse
 };
