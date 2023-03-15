@@ -542,8 +542,6 @@ function checkResult(result) {
 }
 
 
-
-
 // This function compares the result of the circuit solver with the expected result of a given example.
 // It returns the average absolute error of the voltages and currents, as well their maximum absolute errors.
 function compareResult(truth, result) {
@@ -577,16 +575,26 @@ function compareResult(truth, result) {
 console.log("Testing example 2...");
 let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
 checkResult(test2);
+let comp = compareResult(example2.result, test2);
+console.log(`Average voltage error: ${comp.voltageError}`);
+console.log(`Average current error: ${comp.currentError}`);
+console.log(`Maximum voltage error: ${comp.maxVoltageError}`);
+console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
 console.log("Testing example 3...");
 let test3 = solver.solveResistiveCircuit(example3.circuit, example3.groundNode, example3.sourceNode, example3.sourceVoltage);
 checkResult(test3);
+comp = compareResult(example3.result, test3);
+console.log(`Average voltage error: ${comp.voltageError}`);
+console.log(`Average current error: ${comp.currentError}`);
+console.log(`Maximum voltage error: ${comp.maxVoltageError}`);
+console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
 // Test matrix inversion
 console.log("Testing matrix inversion...");
 // Create random triangular matrix of size 500
 let matrix = [];
-let N = 500;
+let N = 256;
 for (let i = 0; i < N; i++) {
     matrix.push([]);
     for (let j = 0; j < N; j++) {
@@ -597,15 +605,39 @@ for (let i = 0; i < N; i++) {
         }
     }
 }
+
+// This function calculates the average absolute difference of the elements in two matrices
+const compareMatrices = (matrix1, matrix2) => {
+    let error = 0;
+    for (let i = 0; i < matrix1.length; i++) {
+        for (let j = 0; j < matrix1[i].length; j++) {
+            error += Math.abs(matrix1[i][j] - matrix2[i][j]);
+        }
+    }
+    return error / (matrix1.length * matrix1[0].length);
+}
+
 // Invert the matrix
 // Time inversion using mathjs
 let start = new Date().getTime();
-let inverse = mathjs.inv(matrix);
+let inverseMathjs = mathjs.inv(matrix);
 let end = new Date().getTime();
 console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
 // Time inversion using my simple code (seems to have same performance as mathjs)
 start = new Date().getTime();
-inverse = utils.simpleInverse(matrix);
+let inverse = utils.simpleInverse(matrix);
 end = new Date().getTime();
 console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// Time inversion using GPU acceleration
+start = new Date().getTime();
+inverse = utils.gpuInverse(matrix);
+end = new Date().getTime();
+console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// Time matrix multiplication
+start = new Date().getTime();
+let product = utils.gpuMultiply(matrix, inverse);
+end = new Date().getTime();
+console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);
