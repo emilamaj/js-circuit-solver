@@ -27,7 +27,9 @@ function simpleInverse(A, iterations=1) {
 function gpuInverse(A) {
     // Check if GPU acceleration is available.
     if (!GPU.isGPUSupported) {
-        console.log('GPU acceleration is not supported.');
+        console.log('GPU acceleration is NOT supported.');
+    }else{
+        console.log('GPU acceleration is supported.');
     }
 
     // We create a new GPU instance.
