@@ -61,9 +61,6 @@ function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage, u
     }
 
     // We solve the system of linear equations.
-    // let x = mathjs.lusolve(M, b);
-    console.log("Solving system of linear equations, M = ", M, ", b = ", b);
-    console.log("Circuit = ", circuit);
     let x = utils.solveLinearEquations(M, b, useGpu);
 
     // We create an array to store the results.

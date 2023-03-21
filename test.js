@@ -584,6 +584,7 @@ const compareMatrices = (matrix1, matrix2) => {
 
 
 // Test some circuits
+// Circuit 2
 console.log("Testing example 2...");
 let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
 checkResult(test2);
@@ -593,6 +594,7 @@ console.log(`Average current error: ${comp.currentError}`);
 console.log(`Maximum voltage error: ${comp.maxVoltageError}`);
 console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
+// Circuit 3
 console.log("Testing example 3...");
 let test3 = solver.solveResistiveCircuit(example3.circuit, example3.groundNode, example3.sourceNode, example3.sourceVoltage);
 checkResult(test3);
