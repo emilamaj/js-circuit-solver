@@ -222,7 +222,7 @@ let example2 = {
         ]
     ],
     sourceNode: 0,
-    groundNode: 9,
+    groundNode: 10,
     sourceVoltage: 1, 
     result: [
         {
@@ -230,7 +230,7 @@ let example2 = {
             connections: [
                 {
                     to: 1,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -239,11 +239,11 @@ let example2 = {
             connections: [
                 {
                     to: 0,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 2,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -252,11 +252,11 @@ let example2 = {
             connections: [
                 {
                     to: 1,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 3,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -265,11 +265,11 @@ let example2 = {
             connections: [
                 {
                     to: 2,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 4,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -278,11 +278,11 @@ let example2 = {
             connections: [
                 {
                     to: 3,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 5,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -291,11 +291,11 @@ let example2 = {
             connections: [
                 {
                     to: 4,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 6,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -304,11 +304,11 @@ let example2 = {
             connections: [
                 {
                     to: 5,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 7,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -317,11 +317,11 @@ let example2 = {
             connections: [
                 {
                     to: 6,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 8,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -330,11 +330,11 @@ let example2 = {
             connections: [
                 {
                     to: 7,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 9,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -343,11 +343,11 @@ let example2 = {
             connections: [
                 {
                     to: 8,
-                    current: -1
+                    current: -0.1
                 },
                 {
                     to: 10,
-                    current: 1
+                    current: 0.1
                 }
             ]
         },
@@ -356,7 +356,7 @@ let example2 = {
             connections: [
                 {
                     to: 9,
-                    current: -1
+                    current: -0.1
                 }
             ]
         }
@@ -571,6 +571,18 @@ function compareResult(truth, result) {
     };
 }
 
+// This function calculates the average absolute difference of the elements in two matrices
+const compareMatrices = (matrix1, matrix2) => {
+    let error = 0;
+    for (let i = 0; i < matrix1.length; i++) {
+        for (let j = 0; j < matrix1[i].length; j++) {
+            error += Math.abs(matrix1[i][j] - matrix2[i][j]);
+        }
+    }
+    return error / (matrix1.length * matrix1[0].length);
+}
+
+
 // Test some circuits
 console.log("Testing example 2...");
 let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
@@ -590,54 +602,47 @@ console.log(`Average current error: ${comp.currentError}`);
 console.log(`Maximum voltage error: ${comp.maxVoltageError}`);
 console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
-// Test matrix inversion
-console.log("Testing matrix inversion...");
-// Create random triangular matrix of size 500
-let matrix = [];
-let N = 256;
-for (let i = 0; i < N; i++) {
-    matrix.push([]);
-    for (let j = 0; j < N; j++) {
-        if (j < i) {
-            matrix[i].push(0);
-        } else {
-            matrix[i].push(Math.random());
-        }
-    }
-}
 
-// This function calculates the average absolute difference of the elements in two matrices
-const compareMatrices = (matrix1, matrix2) => {
-    let error = 0;
-    for (let i = 0; i < matrix1.length; i++) {
-        for (let j = 0; j < matrix1[i].length; j++) {
-            error += Math.abs(matrix1[i][j] - matrix2[i][j]);
-        }
-    }
-    return error / (matrix1.length * matrix1[0].length);
-}
 
-// Invert the matrix
-// Time inversion using mathjs
-let start = new Date().getTime();
-let inverseMathjs = mathjs.inv(matrix);
-let end = new Date().getTime();
-console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
-// Time inversion using my simple code (seems to have same performance as mathjs)
-start = new Date().getTime();
-let inverse = utils.simpleInverse(matrix);
-end = new Date().getTime();
-console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
+// // Test matrix inversion
+// console.log("Testing matrix inversion...");
+// // Create random triangular matrix of size 500
+// let matrix = [];
+// let N = 256;
+// for (let i = 0; i < N; i++) {
+//     matrix.push([]);
+//     for (let j = 0; j < N; j++) {
+//         if (j < i) {
+//             matrix[i].push(0);
+//         } else {
+//             matrix[i].push(Math.random());
+//         }
+//     }
+// }
 
-// Time inversion using GPU acceleration
-start = new Date().getTime();
-inverse = utils.gpuInverse(matrix);
-end = new Date().getTime();
-console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
-// Time matrix multiplication
-start = new Date().getTime();
-let product = utils.gpuMultiply(matrix, inverse);
-end = new Date().getTime();
-console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);
+// // Invert the matrix
+// // Time inversion using mathjs
+// let start = new Date().getTime();
+// let inverseMathjs = mathjs.inv(matrix);
+// let end = new Date().getTime();
+// console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// // Time inversion using my simple code (seems to have same performance as mathjs)
+// start = new Date().getTime();
+// let inverse = utils.simpleInverse(matrix);
+// end = new Date().getTime();
+// console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// // Time inversion using GPU acceleration
+// start = new Date().getTime();
+// inverse = utils.gpuInverse(matrix);
+// end = new Date().getTime();
+// console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
+
+// // Time matrix multiplication
+// start = new Date().getTime();
+// let product = utils.gpuMultiply(matrix, inverse);
+// end = new Date().getTime();
+// console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);
