@@ -81,7 +81,8 @@ function solveLinearEquations(A, b, useGpu) {
 
     // We calculate the inverse of the matrix A.
     if (useGpu) {
-        inverse = gpuInverse(A);
+        let gpuInverse = gpuInverse(A); // This returns an array of Float32Array, so we need to convert it to a matrix.
+        inverse = mathjs.matrix(gpuInverse);
     }else {
         // inverse = simpleInverse(A);
         inverse = mathjs.inv(A);
