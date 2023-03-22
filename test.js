@@ -607,44 +607,44 @@ console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
 
 
-// // Test matrix inversion
-// console.log("Testing matrix inversion...");
-// // Create random triangular matrix of size 500
-// let matrix = [];
-// let N = 256;
-// for (let i = 0; i < N; i++) {
-//     matrix.push([]);
-//     for (let j = 0; j < N; j++) {
-//         if (j < i) {
-//             matrix[i].push(0);
-//         } else {
-//             matrix[i].push(Math.random());
-//         }
-//     }
-// }
+// Test matrix inversion
+console.log("Testing matrix inversion...");
+// Create random triangular matrix of size 500
+let matrix = [];
+let N = 256;
+for (let i = 0; i < N; i++) {
+    matrix.push([]);
+    for (let j = 0; j < N; j++) {
+        if (j < i) {
+            matrix[i].push(0);
+        } else {
+            matrix[i].push(Math.random());
+        }
+    }
+}
 
 
-// // Invert the matrix
-// // Time inversion using mathjs
-// let start = new Date().getTime();
-// let inverseMathjs = mathjs.inv(matrix);
-// let end = new Date().getTime();
-// console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
+// Invert the matrix
+// Time inversion using mathjs
+let start = new Date().getTime();
+let inverseMathjs = mathjs.inv(matrix);
+let end = new Date().getTime();
+console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
-// // Time inversion using my simple code (seems to have same performance as mathjs)
-// start = new Date().getTime();
-// let inverse = utils.simpleInverse(matrix);
-// end = new Date().getTime();
-// console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
+// Time inversion using my simple code (seems to have same performance as mathjs)
+start = new Date().getTime();
+let inverse = utils.simpleInverse(matrix);
+end = new Date().getTime();
+console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
-// // Time inversion using GPU acceleration
-// start = new Date().getTime();
-// inverse = utils.gpuInverse(matrix);
-// end = new Date().getTime();
-// console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
+// Time inversion using GPU acceleration
+start = new Date().getTime();
+inverse = utils.gpuInverse(matrix);
+end = new Date().getTime();
+console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
 
-// // Time matrix multiplication
-// start = new Date().getTime();
-// let product = utils.gpuMultiply(matrix, inverse);
-// end = new Date().getTime();
-// console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);
+// Time matrix multiplication
+start = new Date().getTime();
+let product = utils.gpuMultiply(matrix, inverse);
+end = new Date().getTime();
+console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);

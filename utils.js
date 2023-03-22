@@ -24,7 +24,7 @@ function simpleInverse(A, iterations=1) {
 }
 
 // This function uses GPU acceleration to calculate the inverse of a matrix, using gpu.js.
-function gpuInverse(A) {
+function gpuInverse(A, iterations=3) {
     // Check if GPU acceleration is available.
     if (!GPU.isGPUSupported) {
         console.log('GPU acceleration is NOT supported.');
@@ -45,7 +45,9 @@ function gpuInverse(A) {
     let result = mathjs.identity(A.length).toArray();
 
     // We calculate the next iteration of the result using the formula A^-1 = A^-1 + (I - A*A^-1)/2
-    result = kernel(A, result);
+    for (let i = 0; i < iterations; i++) {
+        result = kernel(A, result);
+    }
 
     // We return the result.
     return result;
@@ -76,13 +78,13 @@ function gpuMultiply(A, B) {
 }
 
 // Solve a system of linear equations using the inverse of a matrix. Equation in the form : Ax = b
-function solveLinearEquations(A, b, useGpu) {
+function solveLinearEquations(A, b, useGpu, gpuIterations=3) {
     let inverse;
 
     // We calculate the inverse of the matrix A.
     if (useGpu) {
-        let gpuInverse = gpuInverse(A); // This returns an array of Float32Array, so we need to convert it to a matrix.
-        inverse = mathjs.matrix(gpuInverse);
+        let gpuResult = gpuInverse(A,gpuIterations); // This returns an array of Float32Array, so we need to convert it to a matrix.
+        inverse = mathjs.matrix(gpuResult);
     }else {
         // inverse = simpleInverse(A);
         inverse = mathjs.inv(A);
