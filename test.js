@@ -1,6 +1,5 @@
 const solver = require("./index");
-const mathjs = require("mathjs");
-const utils = require('./utils.js'); // Used to calculate the inverse of a matrix.
+const fmgpu = require('js-fmgpu');
 
 // To import gpu.js in Node.js, you need to use the following command:
 // npm install --save gpu.js
@@ -586,7 +585,7 @@ const compareMatrices = (matrix1, matrix2) => {
 // Test some circuits
 // Circuit 2
 console.log("Testing example 2...");
-let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage);
+let test2 = solver.solveResistiveCircuit(example2.circuit, example2.groundNode, example2.sourceNode, example2.sourceVoltage, true);
 checkResult(test2);
 let comp = compareResult(example2.result, test2);
 console.log(`Average voltage error: ${comp.voltageError}`);
@@ -596,7 +595,7 @@ console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
 // Circuit 3
 console.log("Testing example 3...");
-let test3 = solver.solveResistiveCircuit(example3.circuit, example3.groundNode, example3.sourceNode, example3.sourceVoltage);
+let test3 = solver.solveResistiveCircuit(example3.circuit, example3.groundNode, example3.sourceNode, example3.sourceVoltage, true);
 checkResult(test3);
 comp = compareResult(example3.result, test3);
 console.log(`Average voltage error: ${comp.voltageError}`);
@@ -604,47 +603,29 @@ console.log(`Average current error: ${comp.currentError}`);
 console.log(`Maximum voltage error: ${comp.maxVoltageError}`);
 console.log(`Maximum current error: ${comp.maxCurrentError}`);
 
+// Test Linear System Solver
+console.log("Testing linear system solver...");
+let N = 500;
 
+// Create a random matrix and vector
+let matrix = Array(N).fill(0).map(() => Array(N).fill(0).map(() => Math.random()));
+let vector = Array(N).fill(0).map(() => Math.random());
 
+// Solve the system using the GPU (fmgpu library) and time it
+let start = performance.now();
+let result = fmgpu.solveLinearSystem(matrix, vector);
+let end = performance.now();
+console.log(`GPU time: ${end - start} ms`);
 
-// Test matrix inversion
-console.log("Testing matrix inversion...");
-// Create random triangular matrix of size 500
-let matrix = [];
-let N = 256;
-for (let i = 0; i < N; i++) {
-    matrix.push([]);
-    for (let j = 0; j < N; j++) {
-        if (j < i) {
-            matrix[i].push(0);
-        } else {
-            matrix[i].push(Math.random());
-        }
-    }
-}
+// Solve the system using the CPU (fmgpu library) and time it
+start = performance.now();
+let result1 = fmgpu.solveLinearSystemSmall(matrix, vector);
+end = performance.now();
+console.log(`CPU time: ${end - start} ms`);
 
-
-// Invert the matrix
-// Time inversion using mathjs
-let start = new Date().getTime();
-let inverseMathjs = mathjs.inv(matrix);
-let end = new Date().getTime();
-console.log(`Mathjs inversion took ${end - start} ms for a ${N}x${N} matrix`);
-
-// Time inversion using my simple code (seems to have same performance as mathjs)
-start = new Date().getTime();
-let inverse = utils.simpleInverse(matrix);
-end = new Date().getTime();
-console.log(`My inversion took ${end - start} ms for a ${N}x${N} matrix`);
-
-// Time inversion using GPU acceleration
-start = new Date().getTime();
-inverse = utils.gpuInverse(matrix);
-end = new Date().getTime();
-console.log(`GPU inversion took ${end - start} ms for a ${N}x${N} matrix`);
-
-// Time matrix multiplication
-start = new Date().getTime();
-let product = utils.gpuMultiply(matrix, inverse);
-end = new Date().getTime();
-console.log(`Matrix multiplication took ${end - start} ms for a ${N}x${N} matrix`);
+// TOO SLOW !! (personal implementation is 3x faster !)
+// // Solve the system using the CPU (math.js library) and time it
+// start = performance.now();
+// let result2 = mathjs.lusolve(matrix, vector);
+// end = performance.now();
+// console.log(`CPU time: ${end - start} ms`);

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/emilamaj/js-circuit-solver#readme",
   "dependencies": {
     "gpu.js": "^2.16.0",
+    "js-fmgpu": "^1.0.1",
     "mathjs": "^11.6.0"
   }
 }
