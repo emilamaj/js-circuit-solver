@@ -9,7 +9,7 @@ Run:
 
 ## solveResistiveCircuit
 
-This library provides a function to solve simple resistive circuits. It takes in a circuit object and returns a solved circuit object.\
+This library provides a function to solve simple resistive circuits. It takes in a circuit object and returns a solved circuit object. \
 
 Usage:
 `function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage)`
@@ -29,8 +29,9 @@ Example circuit diagram:
         |             |
         |---R5---R6---|
 ```
+Since the circuit only contains resistors, we can solve it using the function `solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage)`.
+We want to set the source node (node 0) at 1V and ground node (node 1) at 0V. We can represent this circuit as the following circuit object:
 
-Example circuit object: (source node is 0, ground node is 1)
 ```
 [
     [
@@ -93,3 +94,83 @@ Example circuit object: (source node is 0, ground node is 1)
     ]
 ]
 ```
+
+We get in return the following result, which is an array of objects specifying the *i-th* node's voltage and current flowing to each connected node:
+
+'''
+[
+    {
+        voltage: 1,
+        connections: [
+            {
+                to: 2,
+                current: 0.5
+            },
+            {
+                to: 3,
+                current: 0.5
+            },
+            {
+                to: 4,
+                current: 0.5
+            }
+        ]
+    },
+    {
+        voltage: 0,
+        connections: [
+            {
+                to: 2,
+                current: -0.5
+            },
+            {
+                to: 3,
+                current: -0.5
+            },
+            {
+                to: 4,
+                current: -0.5
+            }
+        ]
+    },
+    {
+        voltage: 0.5,
+        connections: [
+            {
+                to: 0,
+                current: -0.5
+            },
+            {
+                to: 1,
+                current: 0.5
+            }
+        ]
+    },
+    {
+        voltage: 0.5,
+        connections: [
+            {
+                to: 0,
+                current: -0.5
+            },
+            {
+                to: 1,
+                current: 0.5
+            }
+        ]
+    },
+    {
+        voltage: 0.5,
+        connections: [
+            {
+                to: 0,
+                current: -0.5
+            },
+            {
+                to: 1,
+                current: 0.5
+            }
+        ]
+    }
+]
+'''
