@@ -3,7 +3,7 @@ Lightweight library aimed at solving/simulating simple electrical circuits
 
 # Install
 
-Available as [js-circuit-solver](https://www.npmjs.com/package/js-circuit-solver) on npm.
+Available as [js-circuit-solver](https://www.npmjs.com/package/js-circuit-solver) on npm. \
 Run:
 `npm install js-circuit-solver`
 
@@ -99,7 +99,7 @@ We want to set the source node (node 0) at 1V and ground node (node 1) at 0V. We
 
 We get in return the following result, which is an array of objects specifying the *i-th* node's voltage and current flowing to each connected node:
 
-'''
+```
 [
     {
         voltage: 1,
@@ -175,4 +175,4 @@ We get in return the following result, which is an array of objects specifying t
         ]
     }
 ]
-'''
+```
