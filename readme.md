@@ -3,22 +3,24 @@ Lightweight library aimed at solving/simulating simple electrical circuits
 
 # Install
 
-Available as an npm package as `js-circuit-solver`
+Available as [js-circuit-solver](https://www.npmjs.com/package/js-circuit-solver) on npm.
 Run:
 `npm install js-circuit-solver`
 
+# Functions
+
+This library currently provides a single function to solve simple resistive circuits. It takes in a circuit object and returns a solved circuit object. \
+
 ## solveResistiveCircuit
 
-This library provides a function to solve simple resistive circuits. It takes in a circuit object and returns a solved circuit object. \
-
-Usage:
 `function solveResistiveCircuit(circuit, groundNode, sourceNode, sourceVoltage)`
+Usage:
 - circuit: Object containing circuit information. Array where element at index i is the array of the connections that node i has with other nodes.
 - groundNode: Node to be considered as ground
 - sourceNode: Node to be considered as source
 - sourceVoltage: Voltage of the source node
 
-### Circuit Object
+_circuit_ Object
 
 The following is an example circuit consisting of the source and ground nodes connected by 3 parallel branches each having 2 resistors.
 Example circuit diagram:
